@@ -23,3 +23,10 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PdfUploder.dll"]
+
+ENV EXTENT_REPORT_MODE=true
+ENV CURRENT_ENV=development
+ENV DB_CONNECTION_STRING "host=postgres_db;port=5432;username=user;password=mysecretpassword;database=clientdb"
+ENV AWS_SERVICE_URL "http://localstack:4566"
+ENV EVENT_BUS_MAIN_QUEUE_URL "http://localstack:4566/000000000000/platform-eventbus-main-queue"
+RUN echo "List ARGs ${EXTENT_REPORT_MODE}, ${CURRENT_ENV}"

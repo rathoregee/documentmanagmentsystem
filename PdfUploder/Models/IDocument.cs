@@ -9,6 +9,6 @@ namespace PdfUploder
         string Location { get; set; }
         byte[] File { get; set; }
         long Size { get; set; }
-         string Name { get; set; }
+        string Name { get; set; }
     }
 }

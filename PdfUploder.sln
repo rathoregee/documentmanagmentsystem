@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfUploder", "PdfUploder\PdfUploder.csproj", "{BED688FB-95A9-46D5-AE33-8DBC91824E91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfUploder.Tests", "PdfUploder.Tests\PdfUploder.Tests.csproj", "{9490A739-0FA1-4D0B-9EC3-8243E38CE24A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PdfUploder.Tests", "PdfUploder.Tests\PdfUploder.Tests.csproj", "{9490A739-0FA1-4D0B-9EC3-8243E38CE24A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

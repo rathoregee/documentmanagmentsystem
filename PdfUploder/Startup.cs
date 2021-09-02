@@ -33,6 +33,7 @@ namespace PdfUploder
             services.AddTransient<IAmazonClientConnection, AmazonClientConnection>();
             services.AddTransient<IDocumentFactory, DocumentFactory>();
             services.AddTransient<IDocumentContext, DocumentContext>();
+            services.AddTransient<ICustomFileFactory, CustomFileFactory>();
             services.AddTransient<IAmazonWebServicesS3, AmazonWebServicesS3>();
 
             services.AddSwaggerGen(c =>

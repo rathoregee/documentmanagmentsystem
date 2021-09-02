@@ -4,7 +4,6 @@ using PdfUploder.Data;
 using PdfUploder.Services;
 using PdfUploder.Validators;
 using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace PdfUploder.Controllers
@@ -12,15 +11,20 @@ namespace PdfUploder.Controllers
     [ApiController]
     [Route("[controller]")]
     public class DocumentController : ControllerBase
-    {        
-        public IDocumentContext _context { get; }
-        public IDocumentFactory _documentFactory { get; }
-        public IPdfValidator _validator { get; }
+    {
+        private readonly IDocumentContext _context;
+        private readonly IDocumentFactory _documentFactory;
+        private readonly ICustomFileFactory _fileFactory;
+        private readonly IPdfValidator _validator;      
 
-        public DocumentController(IDocumentContext context, IDocumentFactory documentFactory, IPdfValidator validator)
-        {          
+        public DocumentController(IDocumentContext context,
+            IDocumentFactory documentFactory,
+            ICustomFileFactory content,
+            IPdfValidator validator)
+        {
             _context = context;
             _documentFactory = documentFactory;
+            _fileFactory = content;
             _validator = validator;
         }
 
@@ -37,28 +41,33 @@ namespace PdfUploder.Controllers
 
             if (result.File == null)
                 return NotFound();
-            
-            var content = new MemoryStream(result.File);
-            var contentType = "APPLICATION/octet-stream";
-            var fileName = "download.pdf";
-            return File(content, contentType, fileName);
+
+            var file = _fileFactory.Create(result);
+
+            return File(file.Stream, file.Type, file.FileName);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return await _context.DeleteAsync(id) ? Ok() : NotFound();
+            if (await _context.DeleteAsync(id))
+                return Ok();
+
+            return NotFound();
         }
 
         [HttpPost("[controller]/[action]")]
         public async Task<IActionResult> Reorder()
         {
-            return await _context.ChangeSortOrder() ? Ok() : BadRequest();
+            if (await _context.ChangeSortOrder())
+                return Ok();
+
+            return BadRequest("request is incorrect");
         }
 
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile formFile)
-        {   
+        {
             var results = _validator.CustomValidate(formFile);
 
             if (!results.IsValid)
@@ -71,7 +80,7 @@ namespace PdfUploder.Controllers
             }
 
             var newDoc = _documentFactory.Create(formFile.OpenReadStream());
-            newDoc.Name = new Guid().ToString();
+
             await _context.CreateAsync(newDoc);
 
             return Created(new Uri($"{Request.Path}/{newDoc.Id}", UriKind.Relative), newDoc);

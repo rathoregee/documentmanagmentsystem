@@ -12,7 +12,7 @@ namespace PdfUploder.Services
         {
             var ms = (MemoryStream)stream;
             byte[] bytes = ms.ToArray();
-            return new Document { File = bytes };
+            return new Document { Id = new Guid(), File = bytes };
         }
     }
 }
